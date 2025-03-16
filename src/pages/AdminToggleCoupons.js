@@ -9,17 +9,51 @@ const AdminToggleCoupons = () => {
 
   useEffect(() => {
     const fetchCoupons = async () => {
-      const response = await axios.get("https://your-backend-url/api/coupons/all");
-      setCoupons(response.data);
+      const token = localStorage.getItem("adminToken");
+  
+      if (!token) {
+        navigate("/admin/login"); // Redirect to login if token is missing
+        return;
+      }
+  
+      try {
+        const response = await axios.get(
+          "https://coupon-distribution-joo3.onrender.com/api/coupons/all",
+          {
+            headers: { Authorization: `Bearer ${token}` }, // ✅ Send token
+          }
+        );
+        setCoupons(response.data);
+      } catch (error) {
+        console.error("Error fetching coupons:", error);
+        navigate("/admin/login"); // Redirect if unauthorized
+      }
     };
+  
     fetchCoupons();
-  }, []);
-
+  }, [navigate]);
+  
   const handleToggle = async (id, available) => {
-    await axios.put(`https://coupon-distribution-joo3.onrender.com/api/admin/toggle/${id}`, { available: !available });
-    setCoupons(coupons.map(coupon => coupon._id === id ? { ...coupon, available: !available } : coupon));
+    const token = localStorage.getItem("adminToken");
+  
+    try {
+      await axios.put(
+        `https://coupon-distribution-joo3.onrender.com/api/admin/toggle/${id}`,
+        { available: !available },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // ✅ Send token
+        }
+      );
+  
+      // ✅ Update state to reflect changes
+      setCoupons(coupons.map(coupon => 
+        coupon._id === id ? { ...coupon, available: !available } : coupon
+      ));
+    } catch (error) {
+      console.error("Error toggling coupon:", error);
+    }
   };
-
+  
   return (
     <div className="admin-panel">
       <h2>🔄 Toggle Coupons</h2>
@@ -33,7 +67,8 @@ const AdminToggleCoupons = () => {
           </li>
         ))}
       </ul>
-      <button className="back-btn" onClick={() => navigate("/admin/panel")}>⬅ Back</button>
+      <button className="back-btn" onClick={() => navigate("/admin/dashboard")}>⬅ Back</button>
+
     </div>
   );
 };

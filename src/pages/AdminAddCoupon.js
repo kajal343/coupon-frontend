@@ -7,16 +7,31 @@ const AdminAddCoupon = () => {
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
   const handleAddCoupon = async () => {
+    const token = localStorage.getItem("adminToken");
+  
+    if (!token) {
+      setMessage("Unauthorized: Please log in again.");
+      navigate("/admin/login");
+      return;
+    }
+  
     try {
-      const response = await axios.post("https://coupon-distribution-joo3.onrender.com/api/admin/addcoupons", { code });
+      const response = await axios.post(
+        "https://coupon-distribution-joo3.onrender.com/api/admin/addcoupons",
+        { code },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // ✅ Send token
+        }
+      );
+  
       setMessage(response.data.message);
       setCode(""); // Reset input after successful addition
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred.");
     }
   };
+  
 
   return (
     <div className="admin-panel">
@@ -29,7 +44,7 @@ const AdminAddCoupon = () => {
       />
       <button onClick={handleAddCoupon}>Add Coupon</button>
       {message && <p>{message}</p>}
-      <button className="back-btn" onClick={() => navigate("/admin/panel")}>⬅ Back</button>
+      <button className="back-btn" onClick={() => navigate("/admin/dashboard")}>⬅ Back</button>
     </div>
   );
 };

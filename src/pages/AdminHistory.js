@@ -9,11 +9,30 @@ const AdminHistory = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const response = await axios.get("https://coupon-distribution-joo3.onrender.com/api/admin/history");
-      setHistory(response.data);
+      const token = localStorage.getItem("adminToken");
+  
+      if (!token) {
+        navigate("/admin/login"); // Redirect to login if token is missing
+        return;
+      }
+  
+      try {
+        const response = await axios.get(
+          "https://coupon-distribution-joo3.onrender.com/api/admin/history",
+          {
+            headers: { Authorization: `Bearer ${token}` }, // ✅ Send token
+          }
+        );
+        setHistory(response.data);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+        navigate("/admin/login"); // Redirect if unauthorized
+      }
     };
+  
     fetchHistory();
-  }, []);
+  }, [navigate]);
+  
 
   return (
     <div className="admin-panel">
@@ -25,7 +44,8 @@ const AdminHistory = () => {
           </li>
         ))}
       </ul>
-      <button className="back-btn" onClick={() => navigate("/admin/panel")}>⬅ Back</button>
+      <button className="back-btn" onClick={() => navigate("/admin/dashboard")}>⬅ Back</button>
+
     </div>
   );
 };
