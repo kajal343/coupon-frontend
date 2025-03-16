@@ -8,7 +8,7 @@ const CouponClaim = () => {
 
   const handleClaim = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/coupons/claim", {}, { withCredentials: true });
+      const response = await axios.post("https://coupon-distribution-joo3.onrender.com/api/coupons/claim", {}, { withCredentials: true });
       setCoupon(response.data.coupon);
       setMessage(response.data.message);
     } catch (error) {

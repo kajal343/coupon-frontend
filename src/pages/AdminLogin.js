@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,16 +10,16 @@ const AdminLogin = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("https://coupon-distribution-joo3.onrender.com/api/admin/login", { password }, { withCredentials: true });
-      
-      if (response.data.success) {
-        localStorage.setItem("adminToken", response.data.token); // ✅ Store admin token
-        navigate("/admin/dashboard"); // ✅ Redirect to Admin Dashboard
-      } else {
-        setError("Incorrect password!");
-      }
+      const response = await axios.post(
+        "https://coupon-distribution-joo3.onrender.com/api/admin/login",
+        { username: "admin", password }, // ✅ Ensure username is sent
+        { withCredentials: true } // ✅ Allow credentials (cookies)
+      );
+
+      localStorage.setItem("adminToken", response.data.token); // ✅ Store JWT token
+      navigate("/admin/dashboard"); // ✅ Redirect to Admin Panel
     } catch (error) {
-      setError(error.response?.data?.message || "Login failed!");
+      setError(error.response?.data?.message || "Login failed!"); // ✅ Improved error handling
     }
   };
 
@@ -34,7 +33,7 @@ const AdminLogin = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="error-message">{error}</p>} {/* ✅ Show error if exists */}
     </div>
   );
 };
