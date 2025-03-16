@@ -5,7 +5,7 @@ import AdminLogin from "./pages/AdminLogin";
 import CouponClaim from "./components/CouponClaim";
 import Navbar from "./components/Navbar";
 import AdminDashboard from "./pages/AdminDashboard";
-import AddCoupon from "./pages/AddCoupon";
+import AddCoupon from "./pages/AdminAddCoupon";
 import ToggleCoupons from "./pages/AdminToggleCoupons";
 import ClaimHistory from "./pages/AdminHistory";
 
