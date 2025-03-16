@@ -4,13 +4,13 @@ import "../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-
   useEffect(() => {
-    if (localStorage.getItem("adminToken") !== "loggedin") {
-      navigate("/admin/login"); // ✅ Redirect to login if not authenticated
+    const token = localStorage.getItem("adminToken");
+    if (!token) {  // ✅ Redirect if there's no token
+      navigate("/admin/login");
     }
   }, [navigate]);
-
+  
   return (
     <div className="admin-dashboard">
       <h2>Admin Dashboard</h2>
