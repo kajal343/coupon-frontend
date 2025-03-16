@@ -11,18 +11,22 @@ const AdminLogin = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "https://coupon-distribution-joo3.onrender.com/api/admin/login",
-        { username: "admin", password }, // ✅ Ensure username is sent
-        { withCredentials: true } // ✅ Allow credentials (cookies)
+        "https://coupon-distribution-joo3.onrender.com/api/admin/login", 
+        { username, password }, 
+        { withCredentials: true } // ✅ Allow cookies to be sent
       );
-
-      localStorage.setItem("adminToken", response.data.token); // ✅ Store JWT token
-      navigate("/admin/dashboard"); // ✅ Redirect to Admin Panel
+  
+      if (response.data.success) {
+        console.log("Login Successful:", response.data);
+        navigate("/admin/dashboard"); // ✅ Redirect to Admin Dashboard
+      } else {
+        setError("Incorrect password!");
+      }
     } catch (error) {
-      setError(error.response?.data?.message || "Login failed!"); // ✅ Improved error handling
+      setError(error.response?.data?.message || "Login failed!");
     }
   };
-
+  
   return (
     <div className="admin-login">
       <h2>Admin Login</h2>
